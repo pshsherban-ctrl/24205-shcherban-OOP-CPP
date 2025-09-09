@@ -1,2 +1,2 @@
 # 24205-shcherban-OOP-CPP
-/20210-vasilenko-oop-cpp
+/24205-shcherban-oop-cpp
