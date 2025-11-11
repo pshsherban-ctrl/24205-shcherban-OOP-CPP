@@ -63,7 +63,7 @@ int main() {
     
     // Тест 3: Несуществующий входной файл
     std::cout << "Тест 3: Несуществующий входной файл" << std::endl;
-    if (runProgram({"input.txt", "output.csv"}, 1)) {
+    if (runProgram({"nonexist.txt", "input.txt"}, 1)) {
         std::cout << "Тест 3 пройден" << std::endl;
     } else {
         std::cerr << "Тест 3 не пройден" << std::endl;
