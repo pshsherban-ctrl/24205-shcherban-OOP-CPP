@@ -3,11 +3,12 @@
 
 #include <string>    // Для использования std::string
 #include <list>      // Для использования std::list
+#include <functional>  // Добавлено для std::function
 
 class FileReader {
 public:
-    // Метод для чтения всех строк из файла
-    std::list<std::string> readLines(const std::string& filename);
+    // Метод для потокового чтения файла с callback-функцией для каждой строки
+    void readLinesStreaming(const std::string& filename, std::function<void(const std::string&)> processLine);
 };
 
 #endif // FILEREADER_H 

@@ -1,10 +1,10 @@
 #include <iostream>         // Для std::cout, std::cerr
+#include <map>
 #include "FileReader.h"     // Подключение класса FileReader
 #include "WordTokenizer.h"  // Подключение класса WordTokenizer
 #include "FrequencyCounter.h" // Подключение класса FrequencyCounter
 #include "CSVWriter.h"      // Подключение класса CSVWriter
 
-// Главная функция программы
 int main(int argc, char* argv[]) {
     // Проверка количества аргументов командной строки
     if (argc != 3) {
@@ -16,21 +16,20 @@ int main(int argc, char* argv[]) {
     try {
         FileReader reader;        // Создание объекта для чтения файлов
         WordTokenizer tokenizer;  // Создание объекта для разбиения на слова
-        FrequencyCounter counter; // Создание объекта для подсчета частот
-        CSVWriter writer;         // Создание объекта для записи CSV
-
-        // Чтение всех строк из входного файла
-        auto lines = reader.readLines(argv[1]);
+                // Используем map для накопления частот слов
+        std::map<std::string, int> wordFrequencies;
+        int totalWords = 0;  // Счетчик общего количества слов
+        // Потоковая обработка файла
+        reader.readLinesStreaming(argv[1], [&](const std::string& line) {
+            // Обрабатываем каждую строку и сразу подсчитываем слова
+            tokenizer.tokenizeStreaming(line, [&](const std::string& word) {
+                wordFrequencies[word]++;  // Увеличиваем счетчик для слова
+                totalWords++;              // Увеличиваем общий счетчик
+            });
+        });
         
-        // Разбиение строк на отдельные слова
-        auto words = tokenizer.tokenize(lines);
-        
-        // Подсчет частоты каждого слова
-        auto freqMap = counter.count(words);
-        
-        // Запись результатов в выходной CSV файл
-        writer.write(argv[2], freqMap);
-        
+        CSVWriter writer;
+        writer.write(argv[2], wordFrequencies);
     } catch (const std::exception& e) {
         // Обработка и вывод ошибок
         std::cerr << "Error: " << e.what() << std::endl;

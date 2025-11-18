@@ -1,33 +1,24 @@
 #include "WordTokenizer.h"  // Подключение собственного заголовочного файла
 #include <cctype>           // Для функций isalnum и tolower
-#include <algorithm>        // Для std::transform (хотя в этой реализации не используется)
 
-// Реализация метода разбиения строк на слова
-std::list<std::string> WordTokenizer::tokenize(const std::list<std::string>& lines) {
-    std::list<std::string> words;  // Создание списка для хранения слов
+void WordTokenizer::tokenizeStreaming(const std::string& line, 
+                                     std::function<void(const std::string&)> processWord) {
+    std::string word;  // Буфер для одного слова
     
-    // Цикл по всем строкам из входного списка
-    for (const auto& line : lines) {
-        std::string word;  // Временная переменная для накопления текущего слова
-        
-        // Цикл по каждому символу в строке
-        for (char c : line) {
-            // Проверка, является ли символ буквой или цифрой
-            if (std::isalnum(static_cast<unsigned char>(c))) {
-                // Добавление символа к текущему слову (в нижнем регистре)
-                word += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
-            } else if (!word.empty()) {
-                // Если встретили разделитель и слово не пустое, сохраняем слово
-                words.push_back(word);  // Добавление слова в список
-                word.clear();           // Очистка временной переменной для следующего слова
-            }
-        }
-        
-        // Проверка на случай, если слово было в конце строки без разделителя
-        if (!word.empty()) {
-            words.push_back(word);  // Добавление последнего слова из строки
+    // Обрабатываем каждый символ строки
+    for (char c : line) {
+        // Если символ буква или цифра - добавляем к текущему слову
+        if (std::isalnum(static_cast<unsigned char>(c))) {
+            word += static_cast<char>(std::tolower(static_cast<unsigned char>(c)));
+        } else if (!word.empty()) {
+            // Если встретили разделитель и слово не пустое - обрабатываем слово
+            processWord(word);  // Отправляем слово на обработку
+            word.clear();       // Очищаем буфер для следующего слова
         }
     }
     
-    return words;  // Возврат списка всех слов
-} 
+    // Обрабатываем последнее слово в строке (если есть)
+    if (!word.empty()) {
+        processWord(word);
+    }
+}
