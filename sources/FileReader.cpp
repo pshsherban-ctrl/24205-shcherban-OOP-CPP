@@ -1,21 +1,28 @@
 #include "FileReader.h"    // Подключение собственного заголовочного файла
-#include <fstream>         // Для работы с файловыми потоками
 #include <stdexcept>       // Для исключений std::runtime_error
 
 // Реализация метода чтения строк из файла
-void FileReader::readLinesStreaming(const std::string& filename, std::function<void(const std::string&)> processLine) {
-    std::ifstream file(filename);  // Открытие файла для чтения
-    
-    // Проверка успешности открытия файла
+void FileReader::open(const std::string& filename) {
+    file.open(filename);
     if (!file.is_open()) {
-        // Выброс исключения если файл не открылся
-        throw std::runtime_error("Cannot open input.txt");
+        throw std::runtime_error("Cannot open file: " + filename);
     }
-    
-    std::string line;  // Буфер для одной строки
-    
-    // Чтение файла построчно, не сохраняя все сроки в памяти
-    while (std::getline(file, line)) {
-       processLine(line);  // обработка каждой строки стразу
+}
+
+std::string FileReader::next() {
+    std::string line;
+    if (std::getline(file, line)) {
+        return line;
     }
-} 
+    return "";  // Возвращаем пустую строку при EOF
+}
+
+bool FileReader::isEof() const {
+    return file.eof();
+}
+
+void FileReader::close() {
+    if (file.is_open()) {
+        file.close();
+    }
+}

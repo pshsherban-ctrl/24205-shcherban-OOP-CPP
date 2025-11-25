@@ -1,14 +1,25 @@
 #ifndef FILEREADER_H  // Защита от повторного включения заголовочного файла
 #define FILEREADER_H
 
-#include <string>    // Для использования std::string
-#include <list>      // Для использования std::list
-#include <functional>  // Добавлено для std::function
+#include <string>    
+#include <fstream>
 
 class FileReader {
+private:
+    std::ifstream file;  // Файловый поток для чтения
+
 public:
-    // Метод для потокового чтения файла с callback-функцией для каждой строки
-    void readLinesStreaming(const std::string& filename, std::function<void(const std::string&)> processLine);
+    // Открывает файл для чтения
+    void open(const std::string& filename);
+    
+    // Читает следующую строку из файла
+    std::string next();
+    
+    // Проверяет, достигнут ли конец файла
+    bool isEof() const;
+    
+    // Закрывает файл
+    void close();
 };
 
-#endif // FILEREADER_H 
+#endif 

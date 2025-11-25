@@ -3,7 +3,7 @@
 
 #include <string>  // Для std::string
 #include <list>    // Для std::list
-#include <functional>  // Добавлено для std::function
+#include <functional>  // Для std::function
 
 class WordTokenizer {
 public:
@@ -11,4 +11,4 @@ public:
     void tokenizeStreaming(const std::string& line, std::function<void(const std::string&)> processWord);
 };
 
-#endif // WORDTOKENIZER_H 
+#endif

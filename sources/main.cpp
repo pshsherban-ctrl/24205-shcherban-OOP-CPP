@@ -1,5 +1,4 @@
 #include <iostream>         // Для std::cout, std::cerr
-#include <map>
 #include "FileReader.h"     // Подключение класса FileReader
 #include "WordTokenizer.h"  // Подключение класса WordTokenizer
 #include "FrequencyCounter.h" // Подключение класса FrequencyCounter
@@ -9,32 +8,43 @@ int main(int argc, char* argv[]) {
     // Проверка количества аргументов командной строки
     if (argc != 3) {
         std::cerr << "Usage: " << argv[0] << " <input.txt> <output.csv>\n";
-        return 1;  // Возврат кода ошибки
+        return 1; 
     }
 
     // Блок try-catch для обработки исключений
     try {
-        FileReader reader;        // Создание объекта для чтения файлов
-        WordTokenizer tokenizer;  // Создание объекта для разбиения на слова
-                // Используем map для накопления частот слов
-        std::map<std::string, int> wordFrequencies;
-        int totalWords = 0;  // Счетчик общего количества слов
-        // Потоковая обработка файла
-        reader.readLinesStreaming(argv[1], [&](const std::string& line) {
-            // Обрабатываем каждую строку и сразу подсчитываем слова
-            tokenizer.tokenizeStreaming(line, [&](const std::string& word) {
-                wordFrequencies[word]++;  // Увеличиваем счетчик для слова
-                totalWords++;              // Увеличиваем общий счетчик
-            });
-        });
-        
+        FileReader reader;      
+        WordTokenizer tokenizer; 
+        FrequencyCounter counter; 
         CSVWriter writer;
-        writer.write(argv[2], wordFrequencies);
+
+        // Открываем файлы
+        reader.open(argv[1]);
+        writer.open(argv[2]);
+
+        // Обрабатываем файл построчно
+        while (!reader.isEof()) {
+            std::string line = reader.next();
+            if (!line.empty()) {
+                // Токенизируем строку и добавляем слова в счетчик
+                tokenizer.tokenizeStreaming(line, [&](const std::string& word) {
+                    counter.addWord(word);
+                });
+            }
+        }
+        
+        // Получаем статистику и записываем в CSV
+        auto stats = counter.stats();
+        writer.write(stats);
+        
+        // Закрываем файлы
+        reader.close();
+        writer.close();
+
     } catch (const std::exception& e) {
-        // Обработка и вывод ошибок
         std::cerr << "Error: " << e.what() << std::endl;
         return 1;  // Возврат кода ошибки
     }
 
-    return 0;  // Успешное завершение программы
+    return 0;
 } 
