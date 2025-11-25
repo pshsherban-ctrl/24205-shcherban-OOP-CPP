@@ -1,8 +1,8 @@
 #include <iostream>         // Для std::cout, std::cerr
-#include "FileReader.h"     // Подключение класса FileReader
-#include "WordTokenizer.h"  // Подключение класса WordTokenizer
-#include "FrequencyCounter.h" // Подключение класса FrequencyCounter
-#include "CSVWriter.h"      // Подключение класса CSVWriter
+#include "FileReader.h"     
+#include "WordTokenizer.h"  
+#include "FrequencyCounter.h" 
+#include "CSVWriter.h"      
 
 int main(int argc, char* argv[]) {
     // Проверка количества аргументов командной строки
