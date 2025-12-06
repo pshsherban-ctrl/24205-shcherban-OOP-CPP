@@ -1,4 +1,4 @@
-#include "FileReader.h"    // Подключение собственного заголовочного файла
+#include "FileReader.h"    
 #include <stdexcept>       // Для исключений std::runtime_error
 
 // Реализация метода чтения строк из файла

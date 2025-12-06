@@ -1,4 +1,4 @@
-#include "WordTokenizer.h"  // Подключение собственного заголовочного файла
+#include "WordTokenizer.h" 
 #include <cctype>           // Для функций isalnum и tolower
 
 void WordTokenizer::tokenizeStreaming(const std::string& line, 
