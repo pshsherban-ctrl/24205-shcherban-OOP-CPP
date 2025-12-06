@@ -122,7 +122,6 @@ int main() {
         return 1;
     }
     
-    // Уборка
     system("rm -f test_input.txt test_output.csv test_input2.txt test_output2.csv word_count");
     
     std::cout << "Все тесты пройдены успешно!" << std::endl;

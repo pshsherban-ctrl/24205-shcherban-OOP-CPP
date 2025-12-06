@@ -8,7 +8,7 @@
 
 class FrequencyCounter {
 private:
-    std::map<std::string, int> wordCounts;  // Карта для подсчета слов
+    std::map<std::string, int> wordCounts;  // map для подсчета слов
     int totalWordCount;  // Общее количество слов
 
 public:
