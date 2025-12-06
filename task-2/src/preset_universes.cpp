@@ -3,7 +3,6 @@
 #include <vector>
 
 // Создаёт вселенную по указанному пресету
-// Изменено: добавили PresetUniverses:: перед Preset
 Universe PresetUniverses::create(PresetUniverses::Preset preset) {
     // Используем switch для выбора соответствующего метода создания
     switch (preset) {
@@ -33,7 +32,6 @@ Universe PresetUniverses::create(PresetUniverses::Preset preset) {
 }
 
 // Возвращает список всех доступных пресетов с их названиями
-// Изменено: добавили PresetUniverses:: перед Preset
 std::vector<std::pair<std::string, PresetUniverses::Preset>> PresetUniverses::get_available_presets() {
     // Создаём и возвращаем вектор пар "название - значение пресета"
     return {
@@ -83,7 +81,7 @@ Universe PresetUniverses::create_glider() {
     return universe;  // Возвращаем созданную вселенную
 }
 
-// Создаёт планерное ружьё Госпера (знаменитый генератор глайдеров)
+// Создаёт планерное ружьё Госпера
 Universe PresetUniverses::create_gosper_glider_gun() {
     // Создаём большую вселенную для размещения ружья Госпера
     Universe universe(50, 30, Rule("B3/S23"), "Gosper Glider Gun");

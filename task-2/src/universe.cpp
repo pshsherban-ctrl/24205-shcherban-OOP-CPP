@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 
-// Конструктор: создает вселенную заданного размера с указанными правилами и именем
+//создает вселенную заданного размера с указанными правилами и именем
 Universe::Universe(int w, int h, const Rule& r, const std::string& n)
     : width(w), height(h), rule(r), name(n), generation(0) {  // Инициализация полей
     // Проверка корректности размеров
