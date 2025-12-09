@@ -1,4 +1,6 @@
 #include <iostream>         // Для std::cout, std::cerr
+#include <iomanip>  
+#include <sstream>
 #include "FileReader.h"     
 #include "WordTokenizer.h"  
 #include "FrequencyCounter.h" 
@@ -22,7 +24,7 @@ int main(int argc, char* argv[]) {
         reader.open(argv[1]);
         writer.open(argv[2]);
 
-        // Обрабатываем файл построчно
+       // Обрабатываем файл построчно
         while (!reader.isEof()) {
             std::string line = reader.next();
             if (!line.empty()) {
@@ -33,9 +35,38 @@ int main(int argc, char* argv[]) {
             }
         }
         
-        // Получаем статистику и записываем в CSV
+        // Получаем статистику
         auto stats = counter.stats();
-        writer.write(stats);
+        int totalWords = counter.totalWords();
+        
+        // Записываем заголовок
+        writer.writeRow({"Word", "Frequency", "Frequency (%)"});
+        
+        // Сортируем статистику по убыванию частоты
+        std::sort(stats.begin(), stats.end(), 
+                 [](const auto& a, const auto& b) {
+                     return a.second > b.second;
+                 });
+        
+        // Записываем данные
+        for (const auto& [word, frequency] : stats) {
+            // Вычисляем процентную частоту
+            double percentage = (static_cast<double>(frequency) / totalWords) * 100.0;
+            
+            // Форматируем проценты с 6 знаками после запятой
+            std::ostringstream percentageStream;
+            percentageStream << std::fixed << std::setprecision(6) << percentage;
+            
+            // Создаем вектор колонок и записываем строку
+            std::vector<std::string> columns = {
+                word,
+                std::to_string(frequency),
+                percentageStream.str()
+            };
+            
+            writer.writeRow(columns);
+        }
+        
         
         // Закрываем файлы
         reader.close();
