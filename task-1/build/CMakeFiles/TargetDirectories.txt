@@ -1,5 +1,0 @@
-/home/user/Рабочий стол/template/2/build/CMakeFiles/BitArray.dir
-/home/user/Рабочий стол/template/2/build/CMakeFiles/BitArrayTests.dir
-/home/user/Рабочий стол/template/2/build/CMakeFiles/test.dir
-/home/user/Рабочий стол/template/2/build/CMakeFiles/edit_cache.dir
-/home/user/Рабочий стол/template/2/build/CMakeFiles/rebuild_cache.dir
