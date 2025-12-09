@@ -1,9 +1,9 @@
 #ifndef BITARRAY_H
 #define BITARRAY_H
 
-#include <string>     
-#include <vector>      
-#include <stdexcept>   
+#include <string>
+#include <vector>
+#include <stdexcept>
 
 class BitArray {
 public:
@@ -12,7 +12,7 @@ public:
     
     // Деструктор
     ~BitArray();
-    
+
     // Конструктор с параметрами
     // num_bits - количество битов
     // value - начальное значение
@@ -81,8 +81,13 @@ public:
     // Подсчет единичных битов
     int count() const;
     
-    // Доступ к биту по индексу (только чтение)
+    // Доступ к биту по индексу (ТОЛЬКО ДЛЯ ЧТЕНИЯ)
     bool operator[](int i) const;
+    
+    // Доступ к биту по индексу (ДЛЯ ЧТЕНИЯ И ЗАПИСИ)
+    // Возвращает специальный прокси-объект, позволяющий изменять бит
+    class BitProxy; // Предварительное объявление
+    BitProxy operator[](int i);
     
     // Получение количества битов
     int size() const;
@@ -92,6 +97,29 @@ public:
     
     // Преобразование в строку
     std::string to_string() const;
+    
+    // Прокси-класс для оператора [] с возможностью записи
+    class BitProxy {
+    public:
+        // Оператор присваивания для bool
+        BitProxy& operator=(bool val);
+        
+        // Оператор присваивания для другого BitProxy
+        BitProxy& operator=(const BitProxy& other);
+        
+        // Неявное преобразование к bool (для чтения)
+        operator bool() const;
+        
+    private:
+        // Только BitArray может создавать BitProxy
+        BitProxy(BitArray& bit_array, int index);
+        
+        BitArray& bit_array_;  // Ссылка на BitArray
+        int index_;            // Индекс бита
+        
+        // BitArray - дружественный класс, чтобы иметь доступ к конструктору
+        friend class BitArray;
+    };
 
 private:
     // Внутреннее хранилище - биты упакованы в unsigned long
@@ -111,6 +139,12 @@ private:
     
     // Обрезание неиспользуемых битов в последнем блоке
     void trim_last_block();
+    
+    // Установка бита без проверки индекса (для внутреннего использования)
+    void set_bit_unchecked(int n, bool val);
+    
+    // Получение бита без проверки индекса (для внутреннего использования)
+    bool get_bit_unchecked(int n) const;
 };
 
 // Оператор сравнения на равенство
@@ -128,5 +162,4 @@ BitArray operator|(const BitArray& b1, const BitArray& b2);
 // Побитовое XOR (создает новый объект)
 BitArray operator^(const BitArray& b1, const BitArray& b2);
 
-// Завершение защиты от повторного включения
 #endif
