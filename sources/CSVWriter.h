@@ -1,9 +1,8 @@
-#ifndef CSVWRITER_H 
+#ifndef CSVWRITER_H
 #define CSVWRITER_H
 
-#include <string>  // Для std::string
+#include <string>
 #include <vector>
-#include <utility>  // для std::pair
 #include <fstream>
 
 class CSVWriter {
@@ -14,8 +13,8 @@ public:
     // Открывает файл для записи
     void open(const std::string& filename);
     
-    // Записывает статистику в CSV формате
-    void write(const std::vector<std::pair<std::string, int>>& stats);
+    // Записывает вектор строк как строку CSV (колонки через запятую)
+    void writeRow(const std::vector<std::string>& columns);
     
     // Закрывает файл
     void close();
