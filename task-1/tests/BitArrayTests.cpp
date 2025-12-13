@@ -538,6 +538,25 @@ TEST(BitArrayTest, EdgeCases) {
     EXPECT_TRUE(boundary[1]);         // Второй бит должен быть установлен
 }
 
+TEST(BitArrayTest, BitProxy) {
+    BitArray ba(5);
+
+    ba[0] = true;
+    ba[4] = ba[0];  // Копируем значение из бита 0 в бит 4
+    EXPECT_TRUE(ba[4]);
+    
+    ba[2] = false;
+    ba[3] = ba[2];  // Копируем false из бита 2 в бит 3
+    EXPECT_FALSE(ba[3]);
+    
+    // Проверяем все биты
+    EXPECT_TRUE(ba[0]);
+    EXPECT_FALSE(ba[1]);
+    EXPECT_FALSE(ba[2]);
+    EXPECT_FALSE(ba[3]);
+    EXPECT_TRUE(ba[4]);
+}
+
 // Основная функция для запуска тестов
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);  // Инициализация Google Test
