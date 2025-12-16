@@ -557,6 +557,128 @@ TEST(BitArrayTest, BitProxy) {
     EXPECT_TRUE(ba[4]);
 }
 
+// Тест на явный конструктор копирования
+TEST(BitArrayTest, ExplicitCopyConstructor) {
+    BitArray ba1(10);
+    ba1.set(0, true);
+    ba1.set(5, true);
+    ba1.set(9, true);
+    
+    BitArray ba2(ba1);  // явный конструктор копирования
+    
+    EXPECT_EQ(ba1.size(), ba2.size());
+    EXPECT_TRUE(ba1 == ba2);
+    
+    ba2.set(3, true);
+    EXPECT_TRUE(ba1[3] == false);  // Оригинал не должен измениться
+    EXPECT_TRUE(ba2[3] == true);   // Копия изменена
+}
+
+// Тест на неявное копирование при инициализации
+TEST(BitArrayTest, ImplicitCopyOnInitialization) {
+    BitArray original(8);
+    original.set(0, true);
+    original.set(3, true);
+    original.set(7, true);
+
+    // Неявное копирование при инициализации
+    BitArray copy = original;
+
+    EXPECT_EQ(original.size(), copy.size());
+    EXPECT_TRUE(original == copy);
+    
+    // Проверяем, что это разные объекты
+    copy.reset(3);
+    EXPECT_TRUE(original[3] == true);  // Оригинал не изменился
+    EXPECT_TRUE(copy[3] == false);     // Копия изменена
+}
+
+// Вспомогательная функция для тестирования передачи по значению
+bool check_bitarray_arguments(BitArray ba) {
+    // Изменяем копию
+    ba.set(0, true);
+    return ba[0] == true;
+}
+
+TEST(BitArrayTest, ImplicitCopyFunctionParameter) {
+    BitArray original(6);
+    original.set(2, true);
+    original.set(4, true);
+    
+    // Неявное копирование при передаче в функцию
+    bool result = check_bitarray_arguments(original);
+    
+    EXPECT_TRUE(result);
+    EXPECT_TRUE(original[0] == false);  // Оригинал не изменился
+    EXPECT_TRUE(original[2] == true);   // Остальные биты оригинального объекта неизменны
+}
+
+// Тест на неявное копирование при инициализации массива
+TEST(BitArrayTest, ImplicitCopyInArray) {
+    BitArray ba1(5);
+    ba1.set(0, true);
+    ba1.set(2, true);
+    
+    BitArray ba2(5);
+    ba2.set(1, true);
+    ba2.set(4, true);
+    
+    // Неявное копирование при инициализации массива
+    BitArray arrays[3] = {ba1, ba2, ba2};
+    
+    EXPECT_TRUE(arrays[0][0] == true);
+    EXPECT_TRUE(arrays[0][1] == false);
+    EXPECT_TRUE(arrays[1][1] == true);
+    EXPECT_TRUE(arrays[1][4] == true);
+    
+    // Изменение элемента массива не должно влиять на оригинал
+    arrays[0].set(3, true);
+    EXPECT_TRUE(ba1[3] == false);  // Оригинал не изменился
+    EXPECT_TRUE(arrays[0][3] == true);  // Копия в массиве изменена
+}
+
+// Вспомогательная функция для тестирования возврата по значению
+BitArray create_bitarray_copy(BitArray ba) {
+    // Изменяем локальную копию
+    ba.set(ba.size() - 1, true);
+    return ba;  // Неявное копирование при возврате
+}
+
+TEST(BitArrayTest, ImplicitCopyInReturn) {
+    BitArray original(7);
+    original.set(0, true);
+    original.set(3, true);
+    
+    // Неявное копирование при возврате из функции
+    BitArray result = create_bitarray_copy(original);
+    
+    EXPECT_EQ(result.size(), original.size());
+    EXPECT_TRUE(result[0] == true);    // Унаследовано от оригинала
+    EXPECT_TRUE(result[3] == true);    // Унаследовано от оригинала
+    EXPECT_TRUE(result[6] == true);    // Добавлено в функции
+    EXPECT_TRUE(original[6] == false); // Оригинал не изменился
+}
+
+// Тест на копирование больших массивов
+TEST(BitArrayTest, LargeArrayCopy) {
+    BitArray original(1000);
+    for (int i = 0; i < 1000; i += 3) {
+        original.set(i, true);
+    }
+    
+    BitArray copy = original;
+    
+    EXPECT_EQ(original.size(), copy.size());
+    EXPECT_TRUE(original == copy);
+    
+    // Проверяем несколько случайных битов
+    EXPECT_TRUE(copy[0] == true);
+    EXPECT_TRUE(copy[1] == false);
+    EXPECT_TRUE(copy[99] == true);
+    EXPECT_TRUE(copy[998] == false);
+    EXPECT_TRUE(copy[999] == true);
+}
+
 // Основная функция для запуска тестов
 int main(int argc, char **argv) {
     ::testing::InitGoogleTest(&argc, argv);  // Инициализация Google Test

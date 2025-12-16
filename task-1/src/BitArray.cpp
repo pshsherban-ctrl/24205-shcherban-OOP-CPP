@@ -50,7 +50,7 @@ BitArray::BitArray(int num_bits, unsigned long value) : num_bits_(num_bits) {
 }
 
 // Конструктор копирования
-BitArray::BitArray(const BitArray& b) : data_(b.data_), num_bits_(b.num_bits_) {}
+BitArray::BitArray(const BitArray& b) : data_(b.data_), num_bits_(b.num_bits_) {}               //в ImplicitCopyOnInitialization вызывается неявно
 
 // Обмен содержимым двух объектов BitArray
 void BitArray::swap(BitArray& b) {
@@ -61,7 +61,7 @@ void BitArray::swap(BitArray& b) {
 // Оператор присваивания (используем идиому copy-and-swap)
 BitArray& BitArray::operator=(const BitArray& b) {
     if (this != &b) {
-        BitArray temp(b);
+        BitArray temp(b);                                           //неявное копирование (создается временная копия)
         swap(temp);
     }
     return *this;
@@ -76,7 +76,7 @@ void BitArray::resize(int num_bits, bool value) {
     if (num_bits == num_bits_) return;
     
     int old_num_bits = num_bits_;
-    int old_blocks = data_.size();
+    int old_blocks = data_.size();                                             
     int new_blocks = (num_bits + BITS_PER_LONG - 1) / BITS_PER_LONG;
     
     std::vector<unsigned long> old_data = data_;
@@ -199,16 +199,16 @@ BitArray& BitArray::operator>>=(int n) {
 
 // Битовый сдвиг влево (создает новый объект)
 BitArray BitArray::operator<<(int n) const {
-    BitArray result(*this);
+    BitArray result(*this);                             //неявное копирование при возврате (создается полная копи всего объекта, копируетс вектор данных и все метаданные)
     result <<= n;
     return result;
 }
 
 // Битовый сдвиг вправо (создает новый объект)
 BitArray BitArray::operator>>(int n) const {
-    BitArray result(*this);
+    BitArray result(*this);                            
     result >>= n;
-    return result;
+    return result;                                      
 }
 
 // Установка бита по индексу
@@ -255,7 +255,7 @@ bool BitArray::none() const {
 
 // Побитовая инверсия
 BitArray BitArray::operator~() const {
-    BitArray result(*this);
+    BitArray result(*this);                                                
     for (size_t i = 0; i < data_.size(); ++i) {
         result.data_[i] = ~data_[i];
     }
@@ -267,7 +267,7 @@ BitArray BitArray::operator~() const {
 int BitArray::count() const {
     int count = 0;
     for (auto block : data_) {
-        count += std::bitset<BITS_PER_LONG>(block).count();
+        count += std::bitset<BITS_PER_LONG>(block).count();                 // неявное копирование (создается временный объект std::bitset для каждого блока, что является неявным копированием данных)
     }
     return count;
 }
@@ -363,21 +363,21 @@ bool operator!=(const BitArray& a, const BitArray& b) {
 
 // Побитовое И (внешняя функция)
 BitArray operator&(const BitArray& b1, const BitArray& b2) {
-    BitArray result(b1);
+    BitArray result(b1);                                                        //неявное копирование при возврате (создаетсяполная копи всего объекта, копируетс вектор данных и все метаданные)
     result &= b2;
     return result;
 }
 
 // Побитовое ИЛИ (внешняя функция)
 BitArray operator|(const BitArray& b1, const BitArray& b2) {
-    BitArray result(b1);
+    BitArray result(b1);                                                    
     result |= b2;
     return result;
 }
 
 // Побитовое XOR (внешняя функция)
 BitArray operator^(const BitArray& b1, const BitArray& b2) {
-    BitArray result(b1);
+    BitArray result(b1);                                                    
     result ^= b2;
     return result;
 }
