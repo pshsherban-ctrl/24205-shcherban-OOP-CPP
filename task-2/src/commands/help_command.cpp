@@ -1,5 +1,5 @@
 #include "commands/help_command.hpp"
-#include "../game_controller.hpp"
+#include "game_controller.hpp"
 #include <iostream>
 #include <iomanip>
 
